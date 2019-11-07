@@ -49,7 +49,7 @@ function redirect_by_fed_user_session()
         // maybe access to other course
         // redirect to authenticator of JupyterHub
         $attributes = $as->getAttributes();
-        $mail_address = $attributes[GF_ATTRIBUTES['mail']][0];
+        $mail_address = $attributes[GF_ATTRIBUTES[IDP_ATTRIBUTE_USERNAME]][0];
         $group_list = $attributes[GF_ATTRIBUTES['isMemberOf']];
 
         // check authorization

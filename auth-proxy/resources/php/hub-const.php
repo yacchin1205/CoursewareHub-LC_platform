@@ -7,4 +7,6 @@ const DB_PASS = "";
 const DB_PORT = "5432";
 const DB_NAME = "jupyterhub";
 const DB_HOST = "172.17.0.4";
+
+const IDP_ATTRIBUTE_USERNAME = "mail";
 ?>
