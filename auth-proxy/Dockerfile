@@ -44,6 +44,14 @@ RUN set -x \
     && rm /var/www/downloaded-simplesamlphp.tar.gz \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+COPY resources/lti /var/www/lti
+# Install lti-1-3-php-library
+RUN mkdir /tmp/lti && cd /tmp/lti \
+    && curl -Lo lti-1-3-php-library.zip https://github.com/IMSGlobal/lti-1-3-php-library/archive/master.zip \
+    && unzip lti-1-3-php-library.zip \
+    && ls -la . \
+    && cd /var/www/lti && composer install
 
 # Configure PHP settings
 RUN perl -pi -e 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php/7.3/fpm/php.ini && \

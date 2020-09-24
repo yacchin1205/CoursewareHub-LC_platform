@@ -1,0 +1,11 @@
+{
+  "repositories": [
+    {
+        "type": "path",
+        "url": "/tmp/lti/lti-1-3-php-library-master"
+    }
+  ],
+  "require": {
+      "imsglobal/lti-1p3-tool": "dev-master"
+  }
+}

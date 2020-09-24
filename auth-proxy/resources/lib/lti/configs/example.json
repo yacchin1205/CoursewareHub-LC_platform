@@ -1,0 +1,13 @@
+{
+    "http://157.1.207.74": {
+        "client_id": "TVG3xK6pAK5WJdT",
+        "auth_login_url": "http://157.1.207.74/mod/lti/auth.php",
+        "auth_token_url": "http://157.1.207.74/mod/lti/token.php",
+        "key_set_url": "http://157.1.207.74/mod/lti/certs.php",
+        "private_key_file": "/private.key",
+        "kid": "3d3aee7c67024560ceeb",
+        "deployment": [
+            "1"
+        ]
+    }
+}
