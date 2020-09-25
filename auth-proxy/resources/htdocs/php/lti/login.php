@@ -3,7 +3,6 @@ require_once __DIR__ . '/../../../lti/vendor/autoload.php';
 require_once __DIR__ . '/../../../lib/lti/db.php';
 
 @session_start();
-session_regenerate_id(true);
 
 use \IMSGlobal\LTI;
 
