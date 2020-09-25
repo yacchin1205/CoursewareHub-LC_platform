@@ -4,6 +4,8 @@ require_once __DIR__ . '/../../../lib/lti/db.php';
 require_once __DIR__ . '/../../../lib/hub-const.php';
 require_once __DIR__ . '/../../../lib/functions.php';
 
+@session_start();
+
 use \IMSGlobal\LTI;
 $launch = LTI\LTI_Message_Launch::new(new CoursewareHub_Database())
     ->validate();
