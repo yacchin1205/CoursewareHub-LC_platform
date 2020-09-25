@@ -12,9 +12,10 @@ $launch = LTI\LTI_Message_Launch::new(new CoursewareHub_Database())
 
 $mail_address = $launch->get_launch_data()['email'];
 
+session_regenerate_id(true);
 // Set Session info
 $username = get_username_from_mail_address($mail_address);
 $_SESSION['username'] = $username;
 
-header("Location: /hub/spawn");
+header("Location: hub.php");
 ?>
