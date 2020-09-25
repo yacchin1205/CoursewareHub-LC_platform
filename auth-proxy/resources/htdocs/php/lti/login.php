@@ -2,6 +2,8 @@
 require_once __DIR__ . '/../../../lti/vendor/autoload.php';
 require_once __DIR__ . '/../../../lib/lti/db.php';
 
+@session_start();
+
 use \IMSGlobal\LTI;
 
 LTI\LTI_OIDC_Login::new(new CoursewareHub_Database())
