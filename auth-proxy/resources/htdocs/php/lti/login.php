@@ -1,8 +1,8 @@
 <?php
+@session_start();
+
 require_once __DIR__ . '/../../../lti/vendor/autoload.php';
 require_once __DIR__ . '/../../../lib/lti/db.php';
-
-@session_start();
 
 use \IMSGlobal\LTI;
 
