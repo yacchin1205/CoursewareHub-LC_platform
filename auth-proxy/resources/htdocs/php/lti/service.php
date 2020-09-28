@@ -13,6 +13,7 @@ $launch = LTI\LTI_Message_Launch::new(new CoursewareHub_Database())
 $mail_address = $launch->get_launch_data()['email'];
 
 // Set Session info
+session_regenerate_id(true);
 $username = get_username_from_mail_address($mail_address);
 $_SESSION['username'] = $username;
 
