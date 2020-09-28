@@ -25,7 +25,6 @@ class CoursewareHub_Database implements LTI\Database {
         return LTI\LTI_Registration::new()
             ->set_auth_login_url($regs[$iss]['auth_login_url'])
             ->set_auth_token_url($regs[$iss]['auth_token_url'])
-            ->set_auth_server($regs[$iss]['auth_server'])
             ->set_client_id($regs[$iss]['client_id'])
             ->set_key_set_url($regs[$iss]['key_set_url'])
             ->set_kid($regs[$iss]['kid'])
