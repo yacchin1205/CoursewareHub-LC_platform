@@ -32,26 +32,9 @@ jobs:
     name: Build platform images
     needs: select
     if: needs.select.outputs.sha != ''
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - name: Build JupyterHub and auth-proxy
-        env:
-          ATTRIBUTE_AGGREGATOR_URL: ${{ vars.ATTRIBUTE_AGGREGATOR_URL || 'https://github.com/NII-cloud-operation/simplesamlphp-module-attributeaggregator' }}
-          ATTRIBUTE_AGGREGATOR_BRANCH: ${{ vars.ATTRIBUTE_AGGREGATOR_BRANCH || 'dev-2.x-gakunin-cloud-gateway' }}
-        run: |
-          docker build -t "coursewarehub-jupyterhub:$GITHUB_SHA" jupyterhub
-          docker build --build-arg ATTRIBUTE_AGGREGATOR_URL --build-arg ATTRIBUTE_AGGREGATOR_BRANCH -t "coursewarehub-auth-proxy:$GITHUB_SHA" auth-proxy
-          docker save "coursewarehub-jupyterhub:$GITHUB_SHA" "coursewarehub-auth-proxy:$GITHUB_SHA" | zstd -T0 -1 -o "$RUNNER_TEMP/platform.tar.zst"
-      - uses: actions/upload-artifact@v4
-        with:
-          name: platform-images
-          path: ${{ runner.temp }}/platform.tar.zst
-          compression-level: 0
-          retention-days: 1
-          overwrite: true
+    uses: ./.github/workflows/docker.yml
+    with:
+      export_for_e2e: true
 
   deploy:
     name: ${{ matrix.scenario }}
@@ -87,3 +70,4 @@ jobs:
         env:
           LC4RI_PLATFORM_HUB: coursewarehub-jupyterhub:${{ github.sha }}
           LC4RI_PLATFORM_AUTH: coursewarehub-auth-proxy:${{ github.sha }}
+          LC4RI_PLATFORM_SCHEMA_URL: https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/jupyterhub/resources-schema.json
