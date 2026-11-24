@@ -1,0 +1,73 @@
+name: Build and use CoursewareHub with the deployment notebooks
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited]
+  workflow_dispatch:
+    inputs:
+      deploy_repository:
+        description: Deploy repository (owner/repository)
+        default: NII-cloud-operation/CoursewareHub-LC_deploy
+        type: string
+      deploy_branch:
+        description: Deploy branch
+        default: main
+        type: string
+permissions:
+  contents: read
+jobs:
+  select:
+    name: Select deployment notebooks
+    runs-on: ubuntu-24.04
+    outputs:
+      repository: ${{ steps.deploy.outputs.repository }}
+      sha: ${{ steps.deploy.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - id: deploy
+        run: python3 .github/scripts/select-deploy.py
+
+  images:
+    name: Build platform images
+    needs: select
+    if: needs.select.outputs.sha != ''
+    uses: ./.github/workflows/docker.yml
+    with:
+      export_for_e2e: true
+
+  deploy:
+    name: ${{ matrix.scenario }}
+    needs: [select, images]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - authentication: local
+            scenario: Local login, Moodle LTI and custom images
+          - authentication: federation
+            scenario: SAML federation
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ needs.select.outputs.repository }}
+          ref: ${{ needs.select.outputs.sha }}
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: platform-images
+          path: ${{ runner.temp }}
+      - name: Load images built from the platform revision
+        run: |
+          zstd -dc "$RUNNER_TEMP/platform.tar.zst" | docker load
+          rm "$RUNNER_TEMP/platform.tar.zst"
+          echo "Platform $GITHUB_SHA; deploy $(git rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
+      - uses: ./tests/lc4ri/on-premises
+        with:
+          authentication: ${{ matrix.authentication }}
+        env:
+          LC4RI_PLATFORM_HUB: coursewarehub-jupyterhub:${{ github.sha }}
+          LC4RI_PLATFORM_AUTH: coursewarehub-auth-proxy:${{ github.sha }}
+          LC4RI_PLATFORM_SCHEMA_URL: https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/jupyterhub/resources-schema.json
