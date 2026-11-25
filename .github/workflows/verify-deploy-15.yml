@@ -1,0 +1,12 @@
+name: Test platform with deploy PR 15
+on:
+  push:
+    branches: [ci/platform-with-deploy-15]
+permissions:
+  contents: read
+jobs:
+  verify:
+    uses: ./.github/workflows/deploy-e2e.yml
+    with:
+      deploy_repository: yacchin1205/CoursewareHub-LC_deploy
+      deploy_branch: ci/runtime-hub-ca
